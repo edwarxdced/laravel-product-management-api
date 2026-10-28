@@ -71,7 +71,7 @@ El listado utiliza `per_page=15` por defecto (máximo 100). Las respuestas HTTP 
 El archivo **`Product Management API.postman_collection.json`** se incluye en la carpeta `docs/` del repositorio.
 
 1. Abrir **Postman** y seleccionar **Import**.
-2. Elegir `docs/Product Management API.postman_collection.json`.
+2. Elegir `Product Management API.postman_collection.json`.
 3. En las variables de la colección, configurar `base_url` con `http://127.0.0.1:8000/api`.
 4. Ejecutar **Create Product** para crear un producto de ejemplo: la colección guarda automáticamente el ID en `product_id`.
 5. Probar las demás solicitudes; al registrar precios adicionales, usar una `currency_id` diferente de la moneda base. Ejecutar **Delete Product** al final si se desea eliminar el registro de prueba.
