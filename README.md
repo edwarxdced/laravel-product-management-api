@@ -21,6 +21,33 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Pruebas de la API
+
+La suite de Feature Tests usa PHPUnit y configura MySQL con la base exclusiva
+`backend_test_testing`. Créala en el servidor local de pruebas antes de ejecutar
+la suite; no uses la base de desarrollo o producción:
+
+```sql
+CREATE DATABASE backend_test_testing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+Configura las variables `DB_HOST`, `DB_PORT`, `DB_USERNAME` y `DB_PASSWORD`
+para ese servidor y ejecuta:
+
+```bash
+php artisan test
+```
+
+Los tests usan `RefreshDatabase`; una protección del test harness rechaza
+cualquier base distinta de `backend_test_testing`. Para una ejecución local
+temporal sin MySQL, se permite únicamente SQLite en memoria:
+
+```powershell
+$env:DB_CONNECTION = "sqlite"
+$env:DB_DATABASE = ":memory:"
+php artisan test
+```
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
