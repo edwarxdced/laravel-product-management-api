@@ -1,0 +1,240 @@
+{
+  "info": {
+    "_postman_id": "c8196c24-e151-4f13-8bdf-f602e0690758",
+    "name": "Product Management API",
+    "description": "## Overview\n\nThe **Product Management API** collection provides a complete set of endpoints for managing products and their associated pricing within your platform. It is organized into two functional groups:\n\n### Products\n\nFull CRUD operations for product resources:\n\n- **List Products:** Retrieve a paginated list of all available products.\n    \n- **Create Product:** Add a new product to the catalog.\n    \n- **Get Product:** Fetch the details of a specific product by ID.\n    \n- **Update Product:** Modify the attributes of an existing product.\n    \n- **Delete Product:** Remove a product from the catalog.\n    \n\n### Product Prices\n\nEndpoints dedicated to managing pricing for individual products:\n\n- **List Product Prices:** Retrieve all prices associated with a specific product.\n    \n- **Create Product Price:** Define a new price entry for a product.\n    \n\n---\n\n### Variables\n\nThe collection uses two variables:\n\n| Variable | Description |\n| --- | --- |\n| `{{base_url}}` | The base URL of the API server |\n| `{{product_id}}` | The ID of the product to operate on |\n\nSet these in your environment or at the collection level before sending requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "926063",
+    "_collection_link": "https://go.postman.co/collection/926063-c8196c24-e151-4f13-8bdf-f602e0690758?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Product Prices",
+      "item": [
+        {
+          "name": "List Product Prices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}/prices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}",
+                "prices"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product Price",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"currency_id\": 2,\r\n    \"price\": 1800.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}/prices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}",
+                "prices"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products?page=1&per_page=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Product created successfully\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nif (pm.response.code === 201) {\r\n    const product = pm.response.json();\r\n\r\n    pm.collectionVariables.set(\"product_id\", product.id);\r\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Iphone 18 Pro 1TB\",\r\n    \"description\": \"18 Pro teléfono inteligente desarrollado y comercializado por Apple\",\r\n    \"currency_id\": 1,\r\n    \"price\": 1500.00,\r\n    \"tax_cost\": 20,\r\n    \"manufacturing_cost\": 1300.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Iphone 18 Pro Max 1TB + Case\",\r\n    \"description\": \"18 Pro Max teléfono inteligente desarrollado y comercializado por Apple\",\r\n    \"currency_id\": 1,\r\n    \"price\": 1700.00,\r\n    \"tax_cost\": 20,\r\n    \"manufacturing_cost\": 1500.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "product_id",
+      "value": ""
+    }
+  ]
+}

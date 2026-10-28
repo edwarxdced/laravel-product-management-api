@@ -1,85 +1,102 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Product Management API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST desarrollada con **Laravel y MySQL** para gestionar productos y registrar precios adicionales en distintas monedas. Utiliza Eloquent ORM, Form Requests y pruebas automatizadas con PHPUnit.
 
-## About Laravel
+## Requisitos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP y Composer compatibles con la versión de Laravel definida en `composer.json`.
+- MySQL y la extensión PHP `pdo_mysql`.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Instalación
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Clonar el repositorio e instalar dependencias:
 
-## Pruebas de la API
+   ```bash
+   git clone https://github.com/edwarxdced/laravel-product-management-api
+   cd laravel-product-management-api
+   composer install
+   ```
 
-La suite de Feature Tests usa PHPUnit y configura MySQL con la base exclusiva
-`backend_test_testing`. Créala en el servidor local de pruebas antes de ejecutar
-la suite; no uses la base de desarrollo o producción:
+2. Crear el archivo de entorno (`.env`) a partir de `.env.example`. En **PowerShell**:
 
-```sql
-CREATE DATABASE backend_test_testing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
+   ```powershell
+   Copy-Item .env.example .env
+   ```
 
-Configura las variables `DB_HOST`, `DB_PORT`, `DB_USERNAME` y `DB_PASSWORD`
-para ese servidor y ejecuta:
+3. Crear la base de datos en MySQL:
+
+   ```sql
+   CREATE DATABASE backend_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+
+4. Configurar la conexión en `.env` (ajustar usuario, contraseña y puerto según el entorno):
+
+   ```dotenv
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=backend_test
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+5. Preparar y ejecutar la aplicación:
+
+   ```bash
+   php artisan key:generate
+   php artisan config:clear
+   php artisan migrate
+   php artisan db:seed --class=CurrencySeeder
+   php artisan serve
+   ```
+
+La API estará disponible en `http://127.0.0.1:8000/api`. El seeder crea monedas de ejemplo (USD y EUR); ejecútalo una sola vez sobre la base de datos recién creada.
+
+## Endpoints
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/api/products` | Listar productos con paginación (`page`, `per_page`) |
+| POST | `/api/products` | Crear producto |
+| GET | `/api/products/{product}` | Consultar producto, moneda base y precios adicionales |
+| PUT / PATCH | `/api/products/{product}` | Actualizar producto |
+| DELETE | `/api/products/{product}` | Eliminar producto |
+| GET | `/api/products/{product}/prices` | Listar precios adicionales |
+| POST | `/api/products/{product}/prices` | Registrar precio adicional en otra moneda |
+
+El listado utiliza `per_page=15` por defecto (máximo 100). Las respuestas HTTP habituales son **200**, **201**, **204**, **404** y **422**. El precio base se almacena en `products`; los precios adicionales, en `product_prices`. No se admiten precios adicionales con la moneda base ni monedas duplicadas por producto.
+
+## Colección de Postman
+
+El archivo **`Product Management API.postman_collection.json`** se incluye en la carpeta `docs/` del repositorio.
+
+1. Abrir **Postman** y seleccionar **Import**.
+2. Elegir `docs/Product Management API.postman_collection.json`.
+3. En las variables de la colección, configurar `base_url` con `http://127.0.0.1:8000/api`.
+4. Ejecutar **Create Product** para crear un producto de ejemplo: la colección guarda automáticamente el ID en `product_id`.
+5. Probar las demás solicitudes; al registrar precios adicionales, usar una `currency_id` diferente de la moneda base. Ejecutar **Delete Product** al final si se desea eliminar el registro de prueba.
+
+La colección incluye las carpetas **Products** y **Product Prices**.
+
+## Pruebas automatizadas
+
+Ejecutar toda la suite:
 
 ```bash
 php artisan test
 ```
 
-Los tests usan `RefreshDatabase`; una protección del test harness rechaza
-cualquier base distinta de `backend_test_testing`. Para una ejecución local
-temporal sin MySQL, se permite únicamente SQLite en memoria:
-
-```powershell
-$env:DB_CONNECTION = "sqlite"
-$env:DB_DATABASE = ":memory:"
-php artisan test
-```
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Ejecutar solo los tests de productos y precios:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+php artisan test --filter=Product
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Los tests utilizan una configuración de base de datos aislada. El mecanismo de protección admite **MySQL con una base llamada `backend_test_testing`** o **SQLite en memoria (`:memory:`)**. Antes de ejecutarlos, revisar `phpunit.xml` y/o `.env.testing` para comprobar la conexión efectiva; **no utilizar la base de datos de desarrollo o producción para los tests**.
 
-## Contributing
+## Notas de diseño
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Las validaciones de entrada se centralizan en **Form Requests**.
+- Eloquent gestiona las relaciones entre productos, monedas y precios adicionales.
+- La existencia de un recurso se resuelve con `findOrFail()` (404); los datos inválidos devuelven 422.
+- Al eliminar un producto, MySQL elimina sus precios adicionales mediante una clave foránea con `ON DELETE CASCADE`.
